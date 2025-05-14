@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Door Open, Users } from "lucide-react";
+import { Calendar, DoorOpen, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export interface Room {

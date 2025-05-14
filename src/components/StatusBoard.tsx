@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Room } from "./RoomCard";
-import { Door Open, User } from "lucide-react";
+import { DoorOpen, User } from "lucide-react";
 
 interface StatusBoardProps {
   rooms: Room[];
@@ -23,7 +23,7 @@ const StatusBoard: React.FC<StatusBoardProps> = ({ rooms }) => {
         <div className="space-y-4">
           <div className="flex justify-between items-center p-2 bg-available rounded">
             <div className="flex items-center gap-2">
-              <Door Open className="h-5 w-5 text-available-foreground" />
+              <DoorOpen className="h-5 w-5 text-available-foreground" />
               <span className="font-medium text-available-foreground">Disponibles</span>
             </div>
             <Badge variant="outline" className="bg-white">

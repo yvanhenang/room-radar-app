@@ -1,11 +1,10 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Door Open, Users, MapPin, ArrowLeft } from "lucide-react";
+import { Calendar, DoorOpen, Users, MapPin, ArrowLeft } from "lucide-react";
 import { Room } from "@/components/RoomCard";
 
 // Données statiques pour la démonstration
