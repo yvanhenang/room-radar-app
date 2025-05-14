@@ -1,27 +1,38 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { Calendar } from "lucide-react";
+import { useRooms } from "@/context/RoomContext";
+
+interface Team {
+  id: string;
+  name: string;
+}
 
 interface BookingDialogProps {
   open: boolean;
   roomId: string | null;
   roomName: string;
   onClose: () => void;
-  onConfirm: (roomId: string, team: string, duration: string) => void;
 }
 
-const teams = ["Équipe Marketing", "Équipe Développement", "Équipe Design", "Équipe RH", "Équipe Direction"];
-
-const BookingDialog: React.FC<BookingDialogProps> = ({ open, roomId, roomName, onClose, onConfirm }) => {
+const BookingDialog: React.FC<BookingDialogProps> = ({ open, roomId, roomName, onClose }) => {
   const [selectedTeam, setSelectedTeam] = useState<string>("");
   const [duration, setDuration] = useState<string>("1h");
+  const [teams, setTeams] = useState<Team[]>([]);
   const { toast } = useToast();
+  const { updateRoomStatus } = useRooms();
+
+  // Charger les équipes depuis le localStorage
+  useEffect(() => {
+    const savedTeams = localStorage.getItem("teams");
+    if (savedTeams) {
+      setTeams(JSON.parse(savedTeams));
+    }
+  }, []);
 
   const handleConfirm = () => {
     if (!roomId) return;
@@ -33,8 +44,41 @@ const BookingDialog: React.FC<BookingDialogProps> = ({ open, roomId, roomName, o
       });
       return;
     }
+
+    // Calculer l'heure de fin en fonction de la durée
+    const now = new Date();
+    let endTime = new Date(now);
     
-    onConfirm(roomId, selectedTeam, duration);
+    switch (duration) {
+      case "30m":
+        endTime.setMinutes(now.getMinutes() + 30);
+        break;
+      case "1h":
+        endTime.setHours(now.getHours() + 1);
+        break;
+      case "2h":
+        endTime.setHours(now.getHours() + 2);
+        break;
+      case "3h":
+        endTime.setHours(now.getHours() + 3);
+        break;
+      case "journee":
+        endTime.setHours(17, 0, 0); // Fin de journée à 17h
+        break;
+    }
+
+    const endTimeString = endTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    
+    // Mettre à jour le statut de la salle
+    updateRoomStatus(roomId, true, selectedTeam, endTimeString);
+    
+    toast({
+      title: "Réservation confirmée",
+      description: `${roomName} a été réservée pour ${selectedTeam} jusqu'à ${endTimeString}`,
+    });
+    
+    resetForm();
+    onClose();
   };
 
   const resetForm = () => {
@@ -63,7 +107,9 @@ const BookingDialog: React.FC<BookingDialogProps> = ({ open, roomId, roomName, o
               </SelectTrigger>
               <SelectContent>
                 {teams.map((team) => (
-                  <SelectItem key={team} value={team}>{team}</SelectItem>
+                  <SelectItem key={team.id} value={team.name}>
+                    {team.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>

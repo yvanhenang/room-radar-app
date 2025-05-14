@@ -1,73 +1,70 @@
-# Welcome to your Lovable project
+# Room Radar
 
-## Project info
+Une application de gestion des réservations de bureaux et d'espaces de travail.
 
-**URL**: https://lovable.dev/projects/cbe5eb70-8a3b-469f-b0d2-f56145608962
+## Fonctionnalités
 
-## How can I edit this code?
+- Gestion des réservations de bureaux
+- Interface de calendrier pour visualiser les réservations
+- Gestion des équipes
+- Système d'authentification (utilisateurs et administrateurs)
+- Interface moderne et responsive
 
-There are several ways of editing your application.
+## Technologies utilisées
 
-**Use Lovable**
+- React
+- TypeScript
+- Tailwind CSS
+- Shadcn/ui
+- React Router
+- Date-fns
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/cbe5eb70-8a3b-469f-b0d2-f56145608962) and start prompting.
+## Installation
 
-Changes made via Lovable will be committed automatically to this repo.
+1. Clonez le repository :
+```bash
+git clone https://github.com/votre-username/room-radar-app.git
+cd room-radar-app
+```
 
-**Use your preferred IDE**
+2. Installez les dépendances :
+```bash
+npm install
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Lancez l'application en mode développement :
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Identifiants de connexion
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Utilisateur standard
+- Nom d'utilisateur : Users
+- Mot de passe : SkyEngPro
 
-**Use GitHub Codespaces**
+### Administrateur
+- Nom d'utilisateur : Admin
+- Mot de passe : SkyEngPro_Admin
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Structure du projet
 
-## What technologies are used for this project?
+```
+room-radar-app/
+├── src/
+│   ├── components/    # Composants réutilisables
+│   ├── context/       # Contextes React
+│   ├── pages/         # Pages de l'application
+│   ├── styles/        # Styles globaux
+│   └── App.tsx        # Point d'entrée de l'application
+├── public/            # Fichiers statiques
+└── package.json       # Dépendances et scripts
+```
 
-This project is built with:
+## Contribution
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à soumettre une pull request.
 
-## How can I deploy this project?
+## Licence
 
-Simply open [Lovable](https://lovable.dev/projects/cbe5eb70-8a3b-469f-b0d2-f56145608962) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+MIT

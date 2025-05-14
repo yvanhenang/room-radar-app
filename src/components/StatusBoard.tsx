@@ -1,64 +1,52 @@
-
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Room } from "./RoomCard";
-import { DoorOpen, User } from "lucide-react";
+import { DoorOpen, CheckCircle2 } from "lucide-react";
 
 interface StatusBoardProps {
   rooms: Room[];
 }
 
 const StatusBoard: React.FC<StatusBoardProps> = ({ rooms }) => {
-  const availableRooms = rooms.filter(room => !room.isOccupied);
-  const occupiedRooms = rooms.filter(room => room.isOccupied);
+  const totalRooms = rooms.length;
+  const occupiedRooms = rooms.filter(room => room.isOccupied).length;
+  const availableRooms = totalRooms - occupiedRooms;
 
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg">État des salles</CardTitle>
-        <CardDescription>Aperçu en temps réel des salles disponibles et occupées</CardDescription>
+      <CardHeader>
+        <CardTitle>État des salles</CardTitle>
       </CardHeader>
-      <CardContent className="pt-2">
+      <CardContent>
         <div className="space-y-4">
-          <div className="flex justify-between items-center p-2 bg-available rounded">
+          <div className="flex items-center justify-between p-4 bg-available/10 rounded-lg">
             <div className="flex items-center gap-2">
-              <DoorOpen className="h-5 w-5 text-available-foreground" />
-              <span className="font-medium text-available-foreground">Disponibles</span>
+              <CheckCircle2 className="h-5 w-5 text-green-500" />
+              <span className="font-medium">Disponibles</span>
             </div>
-            <Badge variant="outline" className="bg-white">
-              {availableRooms.length}
-            </Badge>
+            <span className="text-2xl font-bold">{availableRooms}</span>
           </div>
 
-          <div className="flex justify-between items-center p-2 bg-occupied rounded">
+          <div className="flex items-center justify-between p-4 bg-occupied/10 rounded-lg">
             <div className="flex items-center gap-2">
-              <User className="h-5 w-5 text-occupied-foreground" />
-              <span className="font-medium text-occupied-foreground">Occupées</span>
+              <DoorOpen className="h-5 w-5 text-red-500" />
+              <span className="font-medium">Occupées</span>
             </div>
-            <Badge variant="outline" className="bg-white">
-              {occupiedRooms.length}
-            </Badge>
+            <span className="text-2xl font-bold">{occupiedRooms}</span>
           </div>
 
-          {occupiedRooms.length > 0 && (
-            <div className="mt-4">
-              <h4 className="text-sm font-medium mb-2">Occupation actuelle:</h4>
-              <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
-                {occupiedRooms.map(room => (
-                  <div key={room.id} className="flex justify-between items-center border-b pb-2">
-                    <div>
-                      <p className="font-medium">{room.name}</p>
-                      <p className="text-sm text-gray-500">{room.occupiedBy}</p>
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      {room.occupiedUntil}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
+          <div className="pt-4 border-t">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-500">Total des salles</span>
+              <span className="font-medium">{totalRooms}</span>
             </div>
-          )}
+            <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-green-500 transition-all duration-300"
+                style={{ width: `${(availableRooms / totalRooms) * 100}%` }}
+              />
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

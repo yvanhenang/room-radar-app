@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,66 +16,59 @@ export interface Room {
 
 interface RoomCardProps {
   room: Room;
-  onBookRoom?: (roomId: string) => void;
+  onBookRoom: (roomId: string) => void;
 }
 
 const RoomCard: React.FC<RoomCardProps> = ({ room, onBookRoom }) => {
   const navigate = useNavigate();
 
-  const handleViewDetails = () => {
-    navigate(`/room/${room.id}`);
-  };
-
   return (
-    <Card className="w-full hover:shadow-md transition-shadow">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-lg font-medium">{room.name}</CardTitle>
-          {room.isOccupied ? (
-            <Badge variant="outline" className="bg-occupied text-occupied-foreground animate-pulse-slow">
-              Occupée
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="bg-available text-available-foreground">
-              Disponible
-            </Badge>
-          )}
-        </div>
+    <Card className="hover:shadow-md transition-shadow">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-xl font-bold">{room.name}</CardTitle>
+        {room.isOccupied ? (
+          <Badge variant="outline" className="bg-occupied text-occupied-foreground animate-pulse-slow">
+            Occupée
+          </Badge>
+        ) : (
+          <Badge variant="outline" className="bg-available text-available-foreground">
+            Disponible
+          </Badge>
+        )}
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div className="flex items-center text-sm text-gray-500">
             <Users className="mr-2 h-4 w-4" />
-            <span>Capacité: {room.capacity} personnes</span>
+            {room.capacity} personnes
           </div>
           
           {room.isOccupied && (
-            <div className="space-y-1">
-              <p className="text-sm font-medium">Occupé par:</p>
-              <p className="text-sm text-gray-600">{room.occupiedBy}</p>
-              {room.occupiedUntil && (
-                <div className="flex items-center text-xs text-gray-500">
-                  <Calendar className="mr-1 h-3 w-3" />
-                  <span>Jusqu'à {room.occupiedUntil}</span>
-                </div>
-              )}
+            <div className="text-sm text-gray-500">
+              <div className="flex items-center">
+                <DoorOpen className="mr-2 h-4 w-4" />
+                Occupée par {room.occupiedBy}
+              </div>
+              <div className="ml-6 mt-1">
+                Jusqu'à {room.occupiedUntil}
+              </div>
             </div>
           )}
           
-          <div className="flex justify-between pt-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleViewDetails}
+          <div className="flex gap-2 pt-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => navigate(`/room/${room.id}`)}
             >
               Détails
             </Button>
-            
-            {!room.isOccupied && onBookRoom && (
-              <Button 
-                size="sm"
+            {!room.isOccupied && (
+              <Button
+                className="flex-1"
                 onClick={() => onBookRoom(room.id)}
               >
+                <Calendar className="mr-2 h-4 w-4" />
                 Réserver
               </Button>
             )}

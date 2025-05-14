@@ -1,61 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, DoorOpen, Users, MapPin, ArrowLeft } from "lucide-react";
+import { Calendar, DoorOpen, Users, MapPin, ArrowLeft, Clock, X } from "lucide-react";
 import { Room } from "@/components/RoomCard";
+import BookingDialog from "@/components/BookingDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
+import { useRooms } from "@/context/RoomContext";
 
-// Données statiques pour la démonstration
-const rooms: Room[] = [
-  {
-    id: "1",
-    name: "Salle Harmonie",
-    capacity: 8,
-    isOccupied: false,
-  },
-  {
-    id: "2",
-    name: "Salle Créativité",
-    capacity: 6,
-    isOccupied: true,
-    occupiedBy: "Équipe Marketing",
-    occupiedUntil: "14:00",
-  },
-  {
-    id: "3",
-    name: "Salle Innovation",
-    capacity: 12,
-    isOccupied: false,
-  },
-  {
-    id: "4",
-    name: "Bureau Collaboration",
-    capacity: 4,
-    isOccupied: true,
-    occupiedBy: "Équipe Design",
-    occupiedUntil: "15:30",
-  },
-  {
-    id: "5",
-    name: "Salle Stratégie",
-    capacity: 10,
-    isOccupied: false,
-  },
-  {
-    id: "6",
-    name: "Espace Projet",
-    capacity: 16,
-    isOccupied: false,
-  }
-];
-
-const RoomDetail = () => {
-  const { id } = useParams();
+const RoomDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  const room = rooms.find(room => room.id === id);
+  const { toast } = useToast();
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const { getRoom, updateRoomStatus } = useRooms();
+
+  const room = getRoom(id || "");
   
   if (!room) {
     return (
@@ -76,6 +50,21 @@ const RoomDetail = () => {
       </div>
     );
   }
+
+  const handleBookRoom = () => {
+    if (!room.isOccupied) {
+      setIsBookingOpen(true);
+    }
+  };
+
+  const handleCancelBooking = () => {
+    updateRoomStatus(room.id, false);
+    toast({
+      title: "Réservation annulée",
+      description: `La réservation de ${room.name} a été annulée`,
+    });
+    setIsCancelDialogOpen(false);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -131,108 +120,73 @@ const RoomDetail = () => {
                     </div>
                   </div>
                 </div>
-                
-                <div className="pt-4 border-t">
-                  <h3 className="font-medium mb-2">Équipements</h3>
-                  <ul className="grid grid-cols-2 gap-2 text-sm">
-                    <li className="flex items-center">
-                      <span className="h-2 w-2 rounded-full bg-green-400 mr-2"></span>
-                      Projecteur
-                    </li>
-                    <li className="flex items-center">
-                      <span className="h-2 w-2 rounded-full bg-green-400 mr-2"></span>
-                      Tableau blanc
-                    </li>
-                    <li className="flex items-center">
-                      <span className="h-2 w-2 rounded-full bg-green-400 mr-2"></span>
-                      Visioconférence
-                    </li>
-                    <li className="flex items-center">
-                      <span className="h-2 w-2 rounded-full bg-green-400 mr-2"></span>
-                      WiFi
-                    </li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle>Historique des réservations</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-2">
-                    <div>
-                      <p className="font-medium">Équipe Développement</p>
-                      <p className="text-sm text-gray-500">Aujourd'hui, 09:00 - 10:30</p>
-                    </div>
-                    <Badge variant="outline">Terminé</Badge>
-                  </div>
-                  
-                  {room.isOccupied && (
-                    <div className="flex items-center justify-between border-b pb-2">
-                      <div>
-                        <p className="font-medium">{room.occupiedBy}</p>
-                        <p className="text-sm text-gray-500">Aujourd'hui, 11:00 - {room.occupiedUntil}</p>
+
+                {room.isOccupied && (
+                  <div className="pt-4 border-t">
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-500">Réservation actuelle</p>
+                      <div className="flex items-center">
+                        <DoorOpen className="mr-2 h-5 w-5 text-gray-400" />
+                        <span className="font-medium">{room.occupiedBy}</span>
                       </div>
-                      <Badge variant="outline" className="bg-occupied text-occupied-foreground">En cours</Badge>
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center justify-between border-b pb-2">
-                    <div>
-                      <p className="font-medium">Équipe RH</p>
-                      <p className="text-sm text-gray-500">Demain, 14:00 - 15:00</p>
-                    </div>
-                    <Badge variant="outline">À venir</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle>État actuel</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {room.isOccupied ? (
-                  <div className="space-y-4">
-                    <div className="p-4 border rounded-lg bg-occupied/10">
-                      <h3 className="font-medium mb-2">Actuellement occupée par</h3>
-                      <div className="flex justify-between items-center">
-                        <p className="font-bold text-lg">{room.occupiedBy}</p>
-                      </div>
-                      <div className="flex items-center mt-3 text-gray-500">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        <span className="text-sm">
-                          Jusqu'à {room.occupiedUntil}
-                        </span>
+                      <div className="flex items-center">
+                        <Clock className="mr-2 h-5 w-5 text-gray-400" />
+                        <span className="font-medium">Jusqu'à {room.occupiedUntil}</span>
                       </div>
                     </div>
-                    <Button disabled variant="outline" className="w-full">
-                      Actuellement indisponible
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="p-4 border rounded-lg bg-available/10">
-                      <h3 className="font-medium mb-1">Disponible</h3>
-                      <p className="text-gray-500 text-sm">
-                        Cette salle est libre et peut être réservée maintenant.
-                      </p>
-                    </div>
-                    <Button className="w-full" onClick={() => navigate('/')}>
-                      Réserver cette salle
-                    </Button>
                   </div>
                 )}
               </CardContent>
             </Card>
           </div>
+
+          <div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {room.isOccupied ? (
+                  <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" className="w-full">
+                        <X className="h-4 w-4 mr-2" />
+                        Annuler la réservation
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Annuler la réservation ?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Êtes-vous sûr de vouloir annuler la réservation de {room.name} ?
+                          Cette action ne peut pas être annulée.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Non, garder la réservation</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleCancelBooking}>
+                          Oui, annuler la réservation
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                ) : (
+                  <Button className="w-full" onClick={handleBookRoom}>
+                    <Calendar className="mr-2 h-4 w-4" />
+                    Réserver la salle
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
+
+        <BookingDialog
+          open={isBookingOpen}
+          roomId={room.id}
+          roomName={room.name}
+          onClose={() => setIsBookingOpen(false)}
+        />
       </main>
     </div>
   );
