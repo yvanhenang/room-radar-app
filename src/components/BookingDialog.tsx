@@ -44,7 +44,7 @@ const BookingDialog: React.FC<BookingDialogProps> = ({ open, roomId, roomName, o
       });
       return;
     }
-
+    
     // Calculer l'heure de fin en fonction de la durée
     const now = new Date();
     let endTime = new Date(now);

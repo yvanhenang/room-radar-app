@@ -13,6 +13,7 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   users: User[];
+  promoteToAdmin: (userId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,7 +35,7 @@ const DEFAULT_USERS: User[] = [
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [users] = useState<User[]>(DEFAULT_USERS);
+  const [users, setUsers] = useState<User[]>(DEFAULT_USERS);
 
   useEffect(() => {
     // Charger l'utilisateur depuis le localStorage
@@ -69,10 +70,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('currentUser');
   };
 
+  const promoteToAdmin = (userId: string) => {
+    setUsers(prevUsers => 
+      prevUsers.map(u => 
+        u.id === userId ? { ...u, role: 'admin' } : u
+      )
+    );
+  };
+
   const isAdmin = user?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, login, logout, users }}>
+    <AuthContext.Provider value={{ user, isAdmin, login, logout, users, promoteToAdmin }}>
       {children}
     </AuthContext.Provider>
   );

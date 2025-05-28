@@ -26,15 +26,15 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onBookRoom }) => {
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-bold">{room.name}</CardTitle>
-        {room.isOccupied ? (
-          <Badge variant="outline" className="bg-occupied text-occupied-foreground animate-pulse-slow">
-            Occupée
-          </Badge>
-        ) : (
-          <Badge variant="outline" className="bg-available text-available-foreground">
-            Disponible
-          </Badge>
-        )}
+          {room.isOccupied ? (
+            <Badge variant="outline" className="bg-occupied text-occupied-foreground animate-pulse-slow">
+              Occupée
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="bg-available text-available-foreground">
+              Disponible
+            </Badge>
+          )}
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -51,20 +51,20 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onBookRoom }) => {
               </div>
               <div className="ml-6 mt-1">
                 Jusqu'à {room.occupiedUntil}
-              </div>
+                </div>
             </div>
           )}
           
           <div className="flex gap-2 pt-2">
-            <Button
-              variant="outline"
+            <Button 
+              variant="outline" 
               className="flex-1"
               onClick={() => navigate(`/room/${room.id}`)}
             >
               Détails
             </Button>
             {!room.isOccupied && (
-              <Button
+              <Button 
                 className="flex-1"
                 onClick={() => onBookRoom(room.id)}
               >

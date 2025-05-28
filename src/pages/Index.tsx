@@ -30,8 +30,8 @@ const Index: React.FC = () => {
                 <RoomCard
                   key={room.id}
                   room={room}
-                  onBookRoom={handleBookRoom}
-                />
+              onBookRoom={handleBookRoom}
+            />
               ))}
             </div>
           </div>
@@ -40,18 +40,18 @@ const Index: React.FC = () => {
             <StatusBoard rooms={rooms} />
           </div>
         </div>
-
-        {selectedRoom && (
-          <BookingDialog
-            open={isBookingOpen}
+      
+      {selectedRoom && (
+        <BookingDialog
+          open={isBookingOpen}
             roomId={selectedRoom.id}
-            roomName={selectedRoom.name}
+          roomName={selectedRoom.name}
             onClose={() => {
               setIsBookingOpen(false);
               setSelectedRoomId(null);
             }}
-          />
-        )}
+        />
+      )}
       </main>
     </div>
   );

@@ -39,7 +39,7 @@ const StatusBoard: React.FC<StatusBoardProps> = ({ rooms }) => {
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Total des salles</span>
               <span className="font-medium">{totalRooms}</span>
-            </div>
+                    </div>
             <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
               <div 
                 className="h-full bg-green-500 transition-all duration-300"

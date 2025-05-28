@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Calendar as CalendarIcon, Clock, Users, Building2 } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Users, Building2, X } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast";
 import Navbar from "@/components/Navbar";
 import { useRooms } from "@/context/RoomContext";
+import { useAuth } from "@/context/AuthContext";
 import { Badge } from "@/components/ui/badge";
 
 interface Team {
@@ -33,6 +34,7 @@ const CalendarView: React.FC = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const { toast } = useToast();
   const { rooms } = useRooms();
+  const { user, isAdmin } = useAuth();
 
   useEffect(() => {
     const savedTeams = localStorage.getItem("teams");
@@ -69,7 +71,7 @@ const CalendarView: React.FC = () => {
         variant: "destructive",
       });
       return;
-}
+    }
 
     const isRoomAvailable = !reservations.some(reservation => 
       reservation.roomId === selectedRoom &&
@@ -109,6 +111,17 @@ const CalendarView: React.FC = () => {
     setStartTime("");
     setEndTime("");
     setSelectedRoom("");
+  };
+
+  const handleReleaseReservation = (reservationId: string) => {
+    const updatedReservations = reservations.filter(r => r.id !== reservationId);
+    setReservations(updatedReservations);
+    localStorage.setItem("reservations", JSON.stringify(updatedReservations));
+    
+    toast({
+      title: "Réservation libérée",
+      description: "La réservation a été supprimée avec succès",
+    });
   };
 
   const getReservationsForDate = (date: Date) => {
@@ -179,9 +192,20 @@ const CalendarView: React.FC = () => {
                             {getTeamName(reservation.teamId)}
                           </p>
                         </div>
-                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                          {reservation.startTime} - {reservation.endTime}
-                        </Badge>
+                        <div className="flex items-center gap-4">
+                          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                            {reservation.startTime} - {reservation.endTime}
+                          </Badge>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="flex items-center gap-2"
+                            onClick={() => handleReleaseReservation(reservation.id)}
+                          >
+                            <X className="h-4 w-4" />
+                            Libérer
+                          </Button>
+                        </div>
                       </div>
                     ))}
                     {getReservationsForDate(date).length === 0 && (
